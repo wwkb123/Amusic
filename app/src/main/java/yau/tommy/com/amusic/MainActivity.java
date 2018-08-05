@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         mViewPager = findViewById(R.id.container);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mSectionsPagerAdapter.addFragment(new Home_Fragment(), "Home");  //adding Fragments to the adapter

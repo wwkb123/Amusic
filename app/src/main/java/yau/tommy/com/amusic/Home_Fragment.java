@@ -1,5 +1,6 @@
 package yau.tommy.com.amusic;
 
+
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.media.MediaPlayer;
@@ -15,11 +16,13 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+
 /**
  * Created by Yiu Chung Yau on 7/31/18.
  */
 
 public class Home_Fragment extends Fragment {
+
     private ListView playlistView;
     private MusicAdapter mAdapter;
     private ArrayList<SongItem> songList;
@@ -35,6 +38,7 @@ public class Home_Fragment extends Fragment {
         initializeUI(view);
 
 
+
         return view;
     }
 
@@ -43,6 +47,7 @@ public class Home_Fragment extends Fragment {
         Uri songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor songCursor = contentResolver.query(songUri,null, null,null,null);
 
+        
         if(songCursor != null && songCursor.moveToFirst()){
             int songTitle = songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
             int songArtist = songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
@@ -52,17 +57,16 @@ public class Home_Fragment extends Fragment {
                 String currentArtist = songCursor.getString(songArtist);
                 SongItem songItem = new SongItem(currentTitle,currentArtist,1);
                 songList.add(songItem);
+
             }while(songCursor.moveToNext());
 
         }
     }
-
     public void initializeUI(View view){
 
         playlistView = view.findViewById(R.id.playlist);
         mAdapter = new MusicAdapter(getActivity(),R.layout.list_view,songList);
         playlistView.setAdapter(mAdapter);
     }
-
 
 }
