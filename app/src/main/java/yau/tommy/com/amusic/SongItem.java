@@ -3,13 +3,13 @@ package yau.tommy.com.amusic;
 public class SongItem {
     private String title;
     private String artist;
-    private int song;
+    private String songPath;
 
 
-    public SongItem(String title, String artist, int song) {
+    public SongItem(String title, String artist, String songPath) {
         this.title = title;
         this.artist = artist;
-        this.song = song;
+        this.songPath = songPath;
     }
 
     public String getTitle() {
@@ -28,11 +28,11 @@ public class SongItem {
         this.artist = artist;
     }
 
-    public int getSong() {
-        return song;
+    public String getSongPath() {
+        return songPath;
     }
 
-    public void setSong(int song) {
-        this.song = song;
+    public void setSongPath(String songPath) {
+        this.songPath = songPath;
     }
 }
