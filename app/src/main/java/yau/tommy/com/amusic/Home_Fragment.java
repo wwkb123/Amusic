@@ -36,7 +36,7 @@ public class Home_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-//        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer = new MediaPlayer();
 
         songList = new ArrayList<>();
         getSongs();
@@ -87,6 +87,9 @@ public class Home_Fragment extends Fragment {
         playlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(mMediaPlayer!= null && mMediaPlayer.isPlaying()){
+                    mMediaPlayer.stop();
+                }
                 SongItem currentSong = songList.get(i);
 
                 mMediaPlayer = new MediaPlayer();

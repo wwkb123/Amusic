@@ -1,52 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="match_parent"
+    android:padding="6dip">
 
 
     <TextView
         android:id="@+id/songTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="69dp"
+        android:layout_marginLeft="55dp"
+        android:layout_marginStart="55dp"
         android:layout_marginTop="0dp"
         android:text=" "
-        android:layout_marginLeft="69dp"
-        android:layout_alignParentLeft="true" />
+        android:maxLines="1"/>
 
     <TextView
         android:id="@+id/songArtist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/songTitle"
         android:layout_alignStart="@+id/songTitle"
         android:layout_below="@+id/songTitle"
         android:text=" "
-        android:layout_alignLeft="@+id/songTitle" />
+        android:maxLines="1"/>
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/songTitle"
-        android:layout_marginStart="21dp"
-        app:srcCompat="@android:drawable/btn_star_big_on"
-        android:layout_marginLeft="21dp"
-        android:layout_alignParentLeft="true" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="25dp"
-        app:srcCompat="@android:drawable/checkbox_on_background"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="25dp" />
+        android:layout_marginStart="10dp"
+        app:srcCompat="@drawable/ic_music"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp" />
+
 </RelativeLayout>
