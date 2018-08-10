@@ -1,14 +1,19 @@
 package yau.tommy.com.amusic;
 
 
+import android.app.NotificationManager;
+import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,7 +95,14 @@ public class Home_Fragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(), MusicService.class);
                 intent.putExtra("songUri",currentSong.getSongPath());
-                getActivity().startService(intent);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    ContextCompat.startForegroundService(getActivity(),intent);
+
+
+                }else{
+                    getActivity().startService(intent);
+                }
 
                 TextView txtCurrSong = getActivity().findViewById(R.id.currSong);
                 txtCurrSong.setText(currentSong.getTitle());
