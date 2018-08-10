@@ -10,13 +10,14 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,9 +59,9 @@ public class Home_Fragment extends Fragment {
         String[] selectionArgsMp3 = new String[]{ mimeType };
 
         Cursor songCursor = contentResolver.query(songUri,projection, selectionMimeType,selectionArgsMp3,sortOrder);
-        for(String name:songCursor.getColumnNames()){
-            Log.e("Cursor",name);
-        }
+//        for(String name:songCursor.getColumnNames()){
+//            Log.e("Cursor",name);
+//        }
 
         if(songCursor != null && songCursor.moveToFirst()){
             int songTitle = songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
@@ -104,12 +105,20 @@ public class Home_Fragment extends Fragment {
                 try {
                     mMediaPlayer.prepare();
                     mMediaPlayer.start();
+                    TextView txtCurrSong = getActivity().findViewById(R.id.currSong);
+                    txtCurrSong.setText(currentSong.getTitle());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
-
+            }
+        });
+        ImageButton playButton = getActivity().findViewById(R.id.playButton);
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mMediaPlayer!= null && mMediaPlayer.isPlaying()){
+                    mMediaPlayer.stop();
+                }
             }
         });
     }
