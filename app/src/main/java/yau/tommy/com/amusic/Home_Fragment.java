@@ -86,10 +86,10 @@ public class Home_Fragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 SongItem currentSong = songList.get(i);
-                Uri songUri = Uri.parse(currentSong.getSongPath());
+                //Uri songUri = Uri.parse(currentSong.getSongPath());
 
                 Intent intent = new Intent(getActivity(), MusicService.class);
-                intent.putExtra("songUri",songUri.toString());
+                intent.putExtra("songUri",currentSong.getSongPath());
                 getActivity().startService(intent);
 
                 TextView txtCurrSong = getActivity().findViewById(R.id.currSong);
