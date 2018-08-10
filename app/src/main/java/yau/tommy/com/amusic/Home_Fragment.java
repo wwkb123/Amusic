@@ -2,9 +2,8 @@ package yau.tommy.com.amusic;
 
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,7 +18,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -32,12 +30,11 @@ public class Home_Fragment extends Fragment {
     private ListView playlistView;
     private MusicAdapter mAdapter;
     private ArrayList<SongItem> songList;
-    private MediaPlayer mMediaPlayer;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        mMediaPlayer = new MediaPlayer();
 
         songList = new ArrayList<>();
         getSongs();
@@ -88,37 +85,23 @@ public class Home_Fragment extends Fragment {
         playlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(mMediaPlayer!= null && mMediaPlayer.isPlaying()){
-                    mMediaPlayer.stop();
-                }
                 SongItem currentSong = songList.get(i);
-
-                mMediaPlayer = new MediaPlayer();
                 Uri songUri = Uri.parse(currentSong.getSongPath());
-                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                try {
-                    mMediaPlayer.setDataSource(getContext(),songUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
-                try {
-                    mMediaPlayer.prepare();
-                    mMediaPlayer.start();
-                    TextView txtCurrSong = getActivity().findViewById(R.id.currSong);
-                    txtCurrSong.setText(currentSong.getTitle());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Intent intent = new Intent(getActivity(), MusicService.class);
+                intent.putExtra("songUri",songUri.toString());
+                getActivity().startService(intent);
+
+                TextView txtCurrSong = getActivity().findViewById(R.id.currSong);
+                txtCurrSong.setText(currentSong.getTitle());
             }
         });
         ImageButton playButton = getActivity().findViewById(R.id.playButton);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mMediaPlayer!= null && mMediaPlayer.isPlaying()){
-                    mMediaPlayer.stop();
-                }
+                getActivity().stopService(new Intent(getActivity(), MusicService.class));
+
             }
         });
     }
