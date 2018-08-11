@@ -14,6 +14,8 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class MusicService extends Service implements MediaPlayer.OnPreparedListener{
@@ -21,6 +23,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private static final String TAG = "MyService";
     private static final String ANDROID_CHANNEL_ID = "yau.tommy.com.amusic.MusicService";
     private static final int NOTIFICATION_ID = 555;
+    NotificationManager nm;
+    Notification.Builder builder;
+    NotificationCompat.Builder compatBuilder;
 
 
     @Override
@@ -34,6 +39,26 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Log.d(TAG, "onCreate");
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            nm.createNotificationChannel(new NotificationChannel(ANDROID_CHANNEL_ID, "Amusic", NotificationManager.IMPORTANCE_DEFAULT));
+            builder = new Notification.Builder(this, ANDROID_CHANNEL_ID)
+                    .setContentTitle("Now Playing")
+                    .setContentText("")
+                    .setSmallIcon(R.mipmap.amusic_icon)
+                    .setAutoCancel(true);
+            Notification notification = builder.build();
+            startForeground(NOTIFICATION_ID, notification);
+        } else {
+            compatBuilder = new NotificationCompat.Builder(this)
+                    .setContentTitle("Now Playing")
+                    .setContentText("")
+                    .setSmallIcon(R.mipmap.amusic_icon)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true);
+            Notification notification = compatBuilder.build();
+            startForeground(NOTIFICATION_ID, notification);
+        }
 
 //        player = MediaPlayer.create(this, R.raw.braincandy);
 //        player.setLooping(false); // Set looping
@@ -48,40 +73,45 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onStart(Intent intent, int startid) {
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId){
         Toast.makeText(this, "My Service Started", Toast.LENGTH_LONG).show();
         Log.d(TAG, "onStart");
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            nm.createNotificationChannel(new NotificationChannel(ANDROID_CHANNEL_ID, "App Service", NotificationManager.IMPORTANCE_DEFAULT));
-            Notification.Builder builder = new Notification.Builder(this, ANDROID_CHANNEL_ID)
-                    .setContentTitle(getString(R.string.app_name))
-                    .setContentText("SmartTracker Running")
-                    .setAutoCancel(true);
-            Notification notification = builder.build();
-            startForeground(NOTIFICATION_ID, notification);
-        } else {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                    .setContentTitle(getString(R.string.app_name))
-                    .setContentText("SmartTracker is Running...")
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setAutoCancel(true);
-            Notification notification = builder.build();
-            startForeground(NOTIFICATION_ID, notification);
-        }
-
         Uri songUri = Uri.parse(intent.getExtras().getString("songUri"));
-        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        String songTitle = intent.getExtras().getString("songTitle");
 
-        try {
-            mMediaPlayer.setDataSource(this,songUri);
-        } catch (IOException e) {
-            e.printStackTrace();
+        Notification notification;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setContentText(songTitle);
+            notification = builder.build();
+        }else{
+            compatBuilder.setContentText(songTitle);
+            notification = compatBuilder.build();
+        }
+        startForeground(NOTIFICATION_ID, notification);
+
+        if(mMediaPlayer!=null){
+            if(mMediaPlayer.isPlaying()){
+                mMediaPlayer.reset();
+            }
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+            try {
+                File filePath = new File(songUri.toString());
+                FileInputStream is = new FileInputStream(filePath);
+                mMediaPlayer.setDataSource(is.getFD());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            mMediaPlayer.prepareAsync();
         }
 
-        mMediaPlayer.prepareAsync();
-
+        return START_STICKY;
     }
 
     @Override

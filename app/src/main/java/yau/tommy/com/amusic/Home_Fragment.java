@@ -1,9 +1,9 @@
 package yau.tommy.com.amusic;
 
 
-import android.app.NotificationManager;
-import android.app.Service;
+import android.app.ActivityManager;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,19 +89,21 @@ public class Home_Fragment extends Fragment {
         playlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
                 SongItem currentSong = songList.get(i);
                 //Uri songUri = Uri.parse(currentSong.getSongPath());
 
                 Intent intent = new Intent(getActivity(), MusicService.class);
                 intent.putExtra("songUri",currentSong.getSongPath());
+                intent.putExtra("songTitle",currentSong.getTitle());
+                intent.putExtra("songArtist",currentSong.getArtist());
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     ContextCompat.startForegroundService(getActivity(),intent);
-
-
                 }else{
                     getActivity().startService(intent);
                 }
+
 
                 TextView txtCurrSong = getActivity().findViewById(R.id.currSong);
                 txtCurrSong.setText(currentSong.getTitle());
@@ -112,10 +113,23 @@ public class Home_Fragment extends Fragment {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().stopService(new Intent(getActivity(), MusicService.class));
+                if(isServiceRunning(MusicService.class)){
+                    getActivity().stopService(new Intent(getActivity(), MusicService.class));
+                }
+
 
             }
         });
+    }
+
+    private boolean isServiceRunning(Class<?> serviceClass){
+        ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
