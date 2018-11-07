@@ -61,6 +61,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
                     .setContentTitle("Now Playing")
                     .setContentText("")
                     .setSmallIcon(R.drawable.icon)
+                    .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setAutoCancel(true);
             Notification notification = compatBuilder.build();
