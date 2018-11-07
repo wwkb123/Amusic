@@ -5,12 +5,15 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -39,13 +42,17 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Log.d(TAG, "onCreate");
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);
+
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                R.drawable.icon);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             nm.createNotificationChannel(new NotificationChannel(ANDROID_CHANNEL_ID, "Amusic", NotificationManager.IMPORTANCE_DEFAULT));
             builder = new Notification.Builder(this, ANDROID_CHANNEL_ID)
                     .setContentTitle("Now Playing")
                     .setContentText("")
-                    .setSmallIcon(R.mipmap.amusic_icon)
+                    .setSmallIcon(R.drawable.icon)
+                    .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setAutoCancel(true);
             Notification notification = builder.build();
             startForeground(NOTIFICATION_ID, notification);
@@ -53,7 +60,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             compatBuilder = new NotificationCompat.Builder(this)
                     .setContentTitle("Now Playing")
                     .setContentText("")
-                    .setSmallIcon(R.mipmap.amusic_icon)
+                    .setSmallIcon(R.drawable.icon)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setAutoCancel(true);
             Notification notification = compatBuilder.build();
