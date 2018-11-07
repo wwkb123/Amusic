@@ -13,14 +13,17 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 
@@ -82,7 +85,7 @@ public class Home_Fragment extends Fragment {
         }
     }
     public void initializeUI(View view){
-
+        final ToggleButton playButton = getActivity().findViewById(R.id.playButton);
         playlistView = view.findViewById(R.id.playlist);
         mAdapter = new MusicAdapter(getActivity(),R.layout.list_view,songList);
         playlistView.setAdapter(mAdapter);
@@ -104,15 +107,26 @@ public class Home_Fragment extends Fragment {
                     getActivity().startService(intent);
                 }
 
-
+                playButton.setChecked(true);
                 TextView txtCurrSong = getActivity().findViewById(R.id.currSong);
                 txtCurrSong.setText(currentSong.getTitle());
+
             }
         });
-        ImageButton playButton = getActivity().findViewById(R.id.playButton);
+
+
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.e("state",playButton.isChecked()+"");
+                if(playButton.isChecked()){
+                    Log.e("state1",playButton.isChecked()+"");
+                    //playButton.setChecked(false); //toggle the button's state
+                }else{
+                    Log.e("state2",playButton.isChecked()+"");
+
+                }
+
                 if(isServiceRunning(MusicService.class)){
                     getActivity().stopService(new Intent(getActivity(), MusicService.class));
                 }
